@@ -6,8 +6,10 @@ namespace Courier.AspNetCoreSample.Receivers
 {
     public class TextMessageReceiver : HostedCourierReceiverBase<TextMessage>
     {
-        public TextMessageReceiver(ILogger<CourierReceiverBase<TextMessage>> logger, ICourier courier) 
-            : base(logger, courier)
+        public TextMessageReceiver(
+            ICourier courier,
+            ILogger<TextMessageReceiver> logger) 
+            : base(courier, logger)
         {
         }
 
