@@ -5,19 +5,38 @@ using Microsoft.Extensions.Logging;
 
 namespace Courier
 {
-    public abstract class HostedCourierReceiverBase<T> :
-        CourierReceiverBase<T>, 
-        IHostedService 
-        where T : class, IMessage
+    public abstract class HostedCourierReceiverBase
+        : CourierReceiverBase, IHostedService
     {
-        public HostedCourierReceiverBase(ILogger<CourierReceiverBase<T>> logger, ICourier courier) 
-            : base(logger, courier)
+        protected HostedCourierReceiverBase(ICourier courier, ILogger<CourierBase> logger) : base(courier, logger)
         {
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Listening for {0} messages...", typeof(T).Name);
+            return this.StartListening(cancellationToken);
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return this.StartListening(cancellationToken);
+        }
+    }
+
+    public abstract class HostedCourierReceiverBase<T> :
+        CourierReceiverBase<T>, 
+        IHostedService 
+        where T : class, IMessage
+    {
+        public HostedCourierReceiverBase(
+            ICourier courier,
+            ILogger<HostedCourierReceiverBase<T>> logger) 
+            : base(courier, logger)
+        {
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
             return this.StartListening(cancellationToken);
         }
 

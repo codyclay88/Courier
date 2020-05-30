@@ -15,35 +15,27 @@ namespace Courier.Extensions.DependencyInjection
 
             foreach (var assembly in assemblies)
             {
-                Console.WriteLine("Finding message types for: {0}", assembly.GetName().Name);
+                // Register Non-Generic Receiver Types
+                assembly.GetTypes()
+                    .Where(t => t.BaseType != null
+                             && t.BaseType == typeof(HostedCourierReceiverBase))
+                    .ToList()
+                    .ForEach((type) => services.TryAddEnumerable(
+                            ServiceDescriptor.Singleton(typeof(IHostedService), type)));
 
-                var messageTypes = assembly
-                .GetTypes()
-                .Where(t => typeof(IMessage).IsAssignableFrom(t)
-                    && !t.IsInterface
-                    && !t.IsAbstract);
-
-                foreach (var messageType in messageTypes)
-                {
-                    var baseProcessorType = typeof(HostedCourierReceiverBase<>)
-                        .MakeGenericType(messageType);
-
-                    Console.WriteLine("Finding processors for: {0}", baseProcessorType.Name);
-
-                    var processorTypes = assembly
-                        .GetTypes()
-                        .Where(t => t.BaseType != null
-                            && t.BaseType.IsGenericType
-                            && t.BaseType == baseProcessorType);
-
-                    foreach (var procType in processorTypes)
-                    {
-                        Console.WriteLine("Registering: {0}", procType.Name);
-
-                        services.TryAddEnumerable(
-                            ServiceDescriptor.Singleton(typeof(IHostedService), procType));
-                    }
-                }
+                // Register Generic Receiver Types
+                assembly.GetTypes()
+                    .Where(t => typeof(IMessage).IsAssignableFrom(t)
+                        && !t.IsInterface
+                        && !t.IsAbstract)
+                    .Select(messageType => typeof(HostedCourierReceiverBase<>).MakeGenericType(messageType))
+                    .SelectMany(baseProcessorType => assembly.GetTypes().Where(
+                                t => t.BaseType != null
+                                 && t.BaseType.IsGenericType
+                                 && t.BaseType == baseProcessorType))
+                    .ToList()
+                    .ForEach(processorType => services.TryAddEnumerable(
+                            ServiceDescriptor.Singleton(typeof(IHostedService), processorType)));
             }
         }
     }
