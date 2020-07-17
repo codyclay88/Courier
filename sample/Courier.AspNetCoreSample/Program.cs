@@ -13,12 +13,14 @@ namespace Courier.AspNetCoreSample
         {
             var host = CreateHostBuilder(args).Build();
 
-            var scope = host.Services.CreateScope();
+            {
+                using var scope = host.Services.CreateScope(); 
             
-            var courier = scope.ServiceProvider.GetRequiredService<ICourier>();
-            courier.Subscribe<SomethingHappenedEvent, SomethingHappenedEventListener>(
-                () => scope.ServiceProvider.GetRequiredService<SomethingHappenedEventListener>()
-            );
+                var courier = scope.ServiceProvider.GetRequiredService<ICourier>();
+                courier.Subscribe<SomethingHappenedEvent, SomethingHappenedEventListener>(
+                    scope.ServiceProvider.GetRequiredService<SomethingHappenedEventListener>());
+            }
+            
             
 
             host.Run();

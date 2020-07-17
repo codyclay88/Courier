@@ -69,6 +69,14 @@ namespace Courier
             this.Subscribe(subscriber);
         }
 
+        public void Subscribe<TEvent, TEventListener>(TEventListener instance)
+            where TEvent : class, ICourierEvent
+            where TEventListener : ICourierListener<TEvent>
+        {
+            var subscriber = new CourierSubscriber<TEvent, TEventListener>(instance);
+            this.Subscribe(subscriber);
+        }
+
         public void Dispose()
         {
             _subscriptions.ForEach((s) => s.Dispose());

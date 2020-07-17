@@ -9,10 +9,22 @@ namespace Courier.UnitTests
         private Courier _courier = new Courier();
 
         [Fact]
+        public void CanSubscribeDirectlyToTheEventStream()
+        {
+            var i = 0;
+            var sub = _courier.Events.Subscribe((e) => {
+                i = i + 1;
+            });
+
+            _courier.Dispatch(new SomeEvent());
+            Assert.Equal(1, i);
+            sub.Dispose();
+        }
+
+        [Fact]
         public void CanDirectlySubscribeWithActions()
         {
             var i = 0;
-            //_courier.Subscribe<ICourierEvent>(e => i += 1);
             _courier.Subscribe<SomeEvent>((e) => i += 1);
             _courier.Dispatch(new SomeEvent());
             Assert.Equal(i, 1);
@@ -38,6 +50,35 @@ namespace Courier.UnitTests
 
             Assert.Equal(1, SomeOtherEventListener.X);
         }
+
+        [Fact]
+        public void CanDirectlySubscribeViaFactoryMethods()
+        {
+            _courier.Subscribe<SomeEvent, SomeEventListener>(() => new SomeEventListener());
+
+            _courier.Dispatch(new SomeEvent());
+
+            Assert.Equal(1, SomeEventListener.Y);
+        }
+        
+        [Fact]
+        public void CanSubscribeViaAnInstanceOfAListener()
+        {
+            var someEventListener = new SomeEventListener();
+            _courier.Subscribe<SomeEvent, SomeEventListener>(someEventListener);
+            _courier.Dispatch(new SomeEvent());
+            Assert.Equal(1, SomeEventListener.Y);
+        }
+    }
+
+    public class NumberedEvent : ICourierEvent
+    {
+        public NumberedEvent(int number)
+        {
+            Number = number;
+        }
+
+        public int Number { get; }
     }
 
     public class SomeOtherEventListener : ICourierListener<SomeEvent>
@@ -64,8 +105,6 @@ namespace Courier.UnitTests
 
     public class SomeEvent : ICourierEvent
     {
-        public string EventType => "Blah";
 
-        public DateTime AuditDate => DateTime.Today;
     }
 }

@@ -30,6 +30,11 @@ namespace Courier
             Action = (e) => listener.Process(e);
         }
 
+        public CourierSubscriber(TEventListener instance)
+        {
+            Action = (e) => instance.Process(e);
+        }
+
         public CourierSubscriber(CourierListenerFactory<TEvent, TEventListener> listenerFactory)
         {
             Action = (e) => listenerFactory.Factory.Invoke().Process(e);
