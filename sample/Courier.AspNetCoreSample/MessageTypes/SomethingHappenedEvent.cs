@@ -1,8 +1,10 @@
+using Courier;
+
 namespace Courier.AspNetCoreSample.MessageTypes
 {
-    public class TextMessage : IMessage
+    public class SomethingHappenedEvent : ICourierEvent
     {
-        public TextMessage(string contents)
+        public SomethingHappenedEvent(string contents)
         {
             Contents = contents;
         }

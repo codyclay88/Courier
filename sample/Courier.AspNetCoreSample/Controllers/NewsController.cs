@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Courier.AspNetCoreSample.Controllers
 {
     [ApiController]
-    [Route("/messages")]
-    public class MessagesController : ControllerBase
+    [Route("/news")]
+    public class NewsController : ControllerBase
     {
         private readonly ICourier _courier;
 
-        public MessagesController(ICourier courier)
+        public NewsController(ICourier courier)
         {
             _courier = courier;
         }
@@ -18,7 +18,7 @@ namespace Courier.AspNetCoreSample.Controllers
         public ActionResult PostMessage(
             [FromBody] TextMessageDto messageDto)
         {
-            _courier.Send(new TextMessage(messageDto.Contents));
+            _courier.Dispatch(new SomethingHappenedEvent(messageDto.Contents));
             return Ok();
         }
     }

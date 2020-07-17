@@ -1,4 +1,5 @@
 using System.Reflection;
+using Courier.AspNetCoreSample.Listeners;
 using Courier.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,11 @@ namespace Courier.AspNetCoreSample
         {
             services.AddControllers();
 
-            services.AddCourier(Assembly.GetExecutingAssembly());
+            services.AddTransient<SomethingHappenedEventListener>();
+            services.AddSingleton<ICourier, Courier>();
+                
+
+            //services.AddCourier(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
