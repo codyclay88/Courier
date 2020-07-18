@@ -1,0 +1,23 @@
+﻿@namespace BlazorWasmSample.Shared
+@inject ICourier courier
+@page "/counter"
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    protected override void OnInitialized()
+    {
+        courier.Subscribe<CounterUpdated>(e => currentCount = e.Counter);
+    }
+
+    private void IncrementCount()
+    {
+        courier.Dispatch(new CounterUpdated(currentCount + 1));
+    }
+}

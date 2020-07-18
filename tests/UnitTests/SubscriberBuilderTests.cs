@@ -4,7 +4,7 @@ namespace Courier.UnitTests
 {
     public class SubscriberBuilderTests
     {
-        private ICourier _courier = new Courier();
+        private ICourier _courier = new InMemoryCourier();
 
         [Fact]
         public void ThrowsExceptionIfNoActionIsSpecified()

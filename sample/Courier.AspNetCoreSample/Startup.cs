@@ -24,7 +24,7 @@ namespace Courier.AspNetCoreSample
             services.AddControllers();
 
             services.AddTransient<SomethingHappenedEventListener>();
-            services.AddSingleton<ICourier, Courier>();
+            services.AddSingleton<ICourier, InMemoryCourier>();
                 
 
             //services.AddCourier(Assembly.GetExecutingAssembly());

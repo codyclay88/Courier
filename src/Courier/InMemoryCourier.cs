@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Courier
 {
-    public class Courier : ICourier, IDisposable
+    public class InMemoryCourier : ICourier, IDisposable
     {
         private ReplaySubject<ICourierEvent> _events = new ReplaySubject<ICourierEvent>();
         private List<IDisposable> _subscriptions = new List<IDisposable>();
-        private readonly ILogger<Courier> _logger;
+        private readonly ILogger<InMemoryCourier> _logger;
 
-        public Courier(ILogger<Courier>? logger = null)
+        public InMemoryCourier(ILogger<InMemoryCourier>? logger = null)
         {
             _logger = logger ?? new NoLogger();
         }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Courier
 {
-    public class NoLogger : ILogger<Courier>
+    public class NoLogger : ILogger<InMemoryCourier>
     {
         public IDisposable? BeginScope<TState>(TState state)
         {

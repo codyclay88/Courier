@@ -7,7 +7,7 @@ namespace Courier.UnitTests
 {
     public class CourierTests
     {
-        private Courier _courier = new Courier();
+        private InMemoryCourier _courier = new InMemoryCourier();
 
         [Fact]
         public void CanSubscribeDirectlyToTheEventStream()
