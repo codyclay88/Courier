@@ -1,5 +1,7 @@
 # Courier
 
+### *This document is in progress!*
+
 A simple messaging library for .NET applications. 
 
 Courier provides a single abstraction that enables developers to build more reactive, event-driven application components - whether those components are running in the same process, across the network, or running in the browser (via WebAssembly/Blazor). 
