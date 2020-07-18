@@ -33,14 +33,6 @@ namespace Courier
         void Subscribe<TEvent>(Action<TEvent> action) where TEvent : class, ICourierEvent;
 
         ///<summary>
-        /// Registers a concrete <see cref="ICourierListener{TEvent}" /> type that will be instantiated whenever a <c>TEvent</c>
-        /// is dispatched into the event stream. 
-        ///</summary>
-        void Subscribe<TEvent, TEventListener>()
-            where TEvent : class, ICourierEvent
-            where TEventListener : ICourierListener<TEvent>;
-
-        ///<summary>
         /// Registers a subscriber of type <c>TEventListener</c> where a new instance is 
         /// generated via the <paramref name="factoryAction" />
         /// in response to a new <c>TEvent</c> instance coming into the event stream.
@@ -50,19 +42,16 @@ namespace Courier
             where TEventListener : ICourierListener<TEvent>;
 
         ///<summary>
-        /// Registers a subscriber of type <c>TEventListener</c> where a new instance is 
-        /// generated via the <paramref name="factory" />
-        /// in response to a new <c>TEvent</c> instance coming into the event stream.
-        ///</summary>
-        void Subscribe<TEvent, TEventListener>(CourierListenerFactory<TEvent, TEventListener> factory)
-            where TEvent : class, ICourierEvent
-            where TEventListener : ICourierListener<TEvent>;
-
-        ///<summary>
         /// Registers a <c>TEventListener</c> instance that will events of type <c>TEvent</c>
         ///</summary>
         void Subscribe<TEvent, TEventListener>(TEventListener instance)
             where TEvent : class, ICourierEvent
             where TEventListener : ICourierListener<TEvent>;
+
+        ///<summary>
+        /// Registers a <c>TEventListener</c> created from the provided <see cref="CourierSubscriptionBuilder{TEvent}" />
+        ///</summary>
+        void Subscribe<TEvent>(CourierSubscriptionBuilder<TEvent> builder)
+            where TEvent : class, ICourierEvent;
     }
 }

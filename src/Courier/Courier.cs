@@ -38,43 +38,25 @@ namespace Courier
             this.Dispatch(events.ToArray());
         }
 
-        internal void Subscribe<TEvent>(CourierSubscriberBase<TEvent> subscriber)
+        internal void Subscribe<TEvent>(CourierSubscription<TEvent> subscription)
             where TEvent : class, ICourierEvent
         {
-            var subscription = CourierSubscription<TEvent>.FromSubscriber(subscriber, Events);
             _subscriptions.Add(subscription);
-            _logger.LogInformation($"Added Courier subscription for event type: {typeof(TEvent).Name}");
         }
 
         public void Subscribe<TEvent>(Action<TEvent> action)
             where TEvent : class, ICourierEvent
         {
-            var subscriber = new CourierSubscriber<TEvent>(action);
-            this.Subscribe(subscriber);
-        }
-
-        public void Subscribe<TEvent, TEventListener>()
-            where TEvent : class, ICourierEvent
-            where TEventListener : ICourierListener<TEvent>
-        {
-            var subscriber = new CourierSubscriber<TEvent, TEventListener>();
-            this.Subscribe(subscriber);
-        }
-
-        public void Subscribe<TEvent, TEventListener>(CourierListenerFactory<TEvent, TEventListener> factory)
-            where TEvent : class, ICourierEvent
-            where TEventListener : ICourierListener<TEvent>
-        {
-            var subscriber = new CourierSubscriber<TEvent, TEventListener>(factory);
-            this.Subscribe(subscriber);
+            var subscription = new CourierSubscriptionBuilder<TEvent>().WithAction(action).BuildWithStream(Events);
+            this.Subscribe(subscription);
         }
 
         public void Subscribe<TEvent, TEventListener>(TEventListener instance)
             where TEvent : class, ICourierEvent
             where TEventListener : ICourierListener<TEvent>
         {
-            var subscriber = new CourierSubscriber<TEvent, TEventListener>(instance);
-            this.Subscribe(subscriber);
+            var subscription = new CourierSubscriptionBuilder<TEvent>().FromListenerInstance(instance).BuildWithStream(Events);
+            this.Subscribe(subscription);
         }
 
         public void Dispose()
@@ -87,8 +69,14 @@ namespace Courier
             where TEvent : class, ICourierEvent
             where TEventListener : ICourierListener<TEvent>
         {
-            var factory = new CourierListenerFactory<TEvent, TEventListener>(factoryAction);
-            var subscriber = new CourierSubscriber<TEvent, TEventListener>(factory);
+            var subscription = new CourierSubscriptionBuilder<TEvent>().FromFactoryAction(factoryAction).BuildWithStream(Events);
+            this.Subscribe(subscription);
+        }
+
+        public void Subscribe<TEvent>(CourierSubscriptionBuilder<TEvent> builder)
+            where TEvent : class, ICourierEvent
+        {
+            var subscriber = builder.BuildWithStream(Events);
             this.Subscribe(subscriber);
         }
 

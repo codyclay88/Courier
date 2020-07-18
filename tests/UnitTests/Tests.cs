@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,7 +23,7 @@ namespace Courier.UnitTests
         }
 
         [Fact]
-        public void CanDirectlySubscribeWithActions()
+        public void CanSubscribeWithActions()
         {
             var i = 0;
             _courier.Subscribe<SomeEvent>((e) => i += 1);
@@ -31,28 +32,7 @@ namespace Courier.UnitTests
         }
 
         [Fact]
-        public void CanDirectlySubscribeUsingOnlyTypeArguments()
-        {            
-            _courier.Subscribe<SomeEvent, SomeEventListener>();
-
-            _courier.Dispatch(new SomeEvent());
-
-            Assert.Equal(1, SomeEventListener.Y);
-        }
-
-        [Fact]
-        public void CanDirectlySubscribeViaFactories()
-        {
-            var courierListenerFactory = new CourierListenerFactory<SomeEvent, SomeOtherEventListener>(() => new SomeOtherEventListener());
-            _courier.Subscribe(courierListenerFactory);
-
-            _courier.Dispatch(new SomeEvent());
-
-            Assert.Equal(1, SomeOtherEventListener.X);
-        }
-
-        [Fact]
-        public void CanDirectlySubscribeViaFactoryMethods()
+        public void CanSubscribeViaFactoryMethods()
         {
             _courier.Subscribe<SomeEvent, SomeEventListener>(() => new SomeEventListener());
 
