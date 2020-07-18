@@ -13,8 +13,16 @@ namespace Courier.UnitTests
         public void CanSubscribeDirectlyToTheEventStream()
         {
             var i = 0;
-            var sub = _courier.Events.Subscribe((e) => {
-                i = i + 1;
+            var sub = _courier.Events.Subscribe((e) => 
+            {
+                switch (e)
+                {
+                    case SomeEvent _:
+                        i = i + 1;
+                        break;
+                    default:
+                        break;
+                }
             });
 
             _courier.Dispatch(new SomeEvent());
@@ -40,7 +48,7 @@ namespace Courier.UnitTests
 
             Assert.Equal(1, SomeEventListener.Y);
         }
-        
+
         [Fact]
         public void CanSubscribeViaAnInstanceOfAListener()
         {
